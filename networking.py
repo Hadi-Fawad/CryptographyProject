@@ -2,15 +2,33 @@
 
 import socket
 from threading import Thread
+import encryption
+
+
+def start_client(host, port, on_message_received):
+    """Starts a client that connects to a server and listens for incoming messages."""
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((host, port))
+
+    def listen_for_messages(client_socket, on_message_received):
+        while True:
+            message = client_socket.recv(1024).decode()
+            if message:
+                on_message_received(message)
+
+    Thread(target=listen_for_messages).start()
+    return client_socket
 
 
 def client_thread(client_socket, addr, on_message_received):
     print(f"Connection from {addr}")
     while True:
-        message = client_socket.recv(1024).decode()
+        message = client_socket.recv(1024)
         if not message:
             break
         on_message_received(message)
+        # Echo the message back to the client
+        client_socket.sendall(message)
     client_socket.close()
 
 
@@ -34,6 +52,14 @@ def send_message(host, port, message):
         if isinstance(message, str):
             message = message.encode()  # Encode string to bytes if not already bytes
         client.send(message)
+
+def send_message_to_client(client_socket, message):
+    try:
+        # Encrypt the message before sending
+        encrypted_message = encryption.encrypt_message(message, server_key)
+        client_socket.sendall(encrypted_message)
+    except Exception as e:
+        print(f"An error occurred while sending a message: {e}")
 
 # Example usage
 if __name__ == "__main__":

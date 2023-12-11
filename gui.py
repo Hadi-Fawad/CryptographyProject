@@ -6,6 +6,7 @@ from threading import Thread
 import networking
 import encryption
 
+
 class ChatApp(tk.Tk):
     def __init__(self, host, port, key_manager):
         super().__init__()
@@ -33,17 +34,21 @@ class ChatApp(tk.Tk):
         self.server_thread = Thread(target=self.run_server)
         self.server_thread.start()
 
+        self.client_socket = networking.start_client(host, port, self.on_message_received)
+
     def send_message(self):
         message = self.input_user.get()
         if message:
+            # Display the original message
+            self.display_message(f"Original Message: {message}", "Sender")
+
             # Encrypt the message
             encrypted_message = encryption.encrypt_message(message, self.key_manager.key)
             # Display the encrypted message
             self.display_message(f"Encrypted Message: {encrypted_message}", "Sender")
-            
 
-            # Send the encrypted message
-            networking.send_message(self.host, self.port, encrypted_message)
+            # Send the encrypted message through the client socket
+            self.client_socket.sendall(encrypted_message)
 
             # Clear the input field
             self.input_user.set('')

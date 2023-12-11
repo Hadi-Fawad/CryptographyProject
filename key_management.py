@@ -12,16 +12,13 @@ SALT_SIZE = 16  # Size of the salt
 class KeyManager:
     def __init__(self, initial_password):
         self.password = initial_password
-        self.salt = get_random_bytes(SALT_SIZE)
-        self.key = derive_key(self.password, self.salt)
-        self.last_update_time = time.time()
+        self.key = derive_key(self.password)  # derive_key now only takes the password
 
     def update_key(self, new_password=None):
         """Update the encryption key."""
         if new_password:
             self.password = new_password
-        self.salt = get_random_bytes(SALT_SIZE)
-        self.key = derive_key(self.password, self.salt)
+        self.key = derive_key(self.password)
         self.last_update_time = time.time()
         print("Key updated.")
 
