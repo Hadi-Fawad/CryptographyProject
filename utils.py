@@ -5,7 +5,7 @@ import os
 
 
 def load_config(file_path):
-    """Loads configuration settings from a JSON file."""
+    """Loads config settings from a JSON file."""
     if not os.path.exists(file_path):
         print(f"Config file {file_path} not found.")
         return {}
@@ -14,7 +14,7 @@ def load_config(file_path):
 
 
 def save_config(config, file_path):
-    """Saves configuration settings to a JSON file."""
+    """Saves config settings to a JSON file."""
     with open(file_path, 'w') as file:
         json.dump(config, file, indent=4)
 
@@ -25,11 +25,10 @@ def format_message(sender, message):
 
 
 def log_message(message):
-    """Logs a message to the console or a file."""
-    print(message)  # For now, just print. Could be expanded to log to a file.
+    print(message)  
 
 
-# Example usage of config functions
+# Example Implementation
 if __name__ == "__main__":
     config = load_config("config.json")
     if not config:

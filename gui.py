@@ -17,11 +17,11 @@ class ChatApp(tk.Tk):
         self.port = port
         self.key_manager = key_manager
 
-        # Message display area
+        # Display area of the message terminal
         self.messages = scrolledtext.ScrolledText(self, state='disabled', height=10)
         self.messages.grid(row=0, column=0, columnspan=2)
 
-        # Text input
+        # Input text
         self.input_user = tk.StringVar()
         self.input_field = tk.Entry(self, text=self.input_user)
         self.input_field.grid(row=1, column=0)
@@ -30,35 +30,33 @@ class ChatApp(tk.Tk):
         self.send_button = tk.Button(self, text="Send", command=self.send_message)
         self.send_button.grid(row=1, column=1)
 
-        # Start a thread for the server to listen to incoming messages
+        # Start a thread to listen to incoming messages on server
         self.server_thread = Thread(target=self.run_server)
         self.server_thread.start()
 
+        # listen to incoming messages from server
         self.client_socket = networking.start_client(host, port, self.on_message_received)
 
     def send_message(self):
         message = self.input_user.get()
         if message:
-            # Display the original message
             self.display_message(f"Original Message: {message}", "Sender")
 
-            # Encrypt the message
+            # Encrypt message
             encrypted_message = encryption.encrypt_message(message, self.key_manager.key)
-            # Display the encrypted message
+            # Display encrypted message
             self.display_message(f"Encrypted Message: {encrypted_message}", "Sender")
 
-            # Send the encrypted message through the client socket
+            # Send encrypted message 
             self.client_socket.sendall(encrypted_message)
-
-            # Clear the input field
             self.input_user.set('')
 
     def on_message_received(self, encrypted_message):
-        # Decrypt and display message
+        # Decrypt display message
         decrypted_message = encryption.decrypt_message(encrypted_message, self.key_manager.key)
-        # Display the encrypted message
+        # Display encrypted message
         self.display_message(f"Encrypted Message: {encrypted_message}", "Receiver")
-        # Display the decrypted message
+        # Display decrypted message
         self.display_message(f"Decrypted Message: {decrypted_message}", "Receiver")
 
     def display_message(self, message, sender):
@@ -70,7 +68,7 @@ class ChatApp(tk.Tk):
         networking.start_server(self.host, self.port, self.on_message_received)
 
 
-# Example usage
+# Example Implementation
 if __name__ == "__main__":
     from key_management import KeyManager
 

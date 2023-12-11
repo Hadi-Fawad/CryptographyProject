@@ -6,13 +6,13 @@ from Crypto.Random import get_random_bytes
 import base64
 
 # Constants
-KEY_LENGTH = 32  # AES key length in bytes
-ITERATIONS = 100000  # Number of iterations for the key derivation
+KEY_LENGTH = 32  # Key length in bytes
+ITERATIONS = 100000  # Iterations of key derivation for security
 
 
 def derive_key(password: str) -> bytes:
     """Derive a cryptographic key from a password."""
-    # Using a static string as salt for demonstration; In practice, it's better to use a random salt
+    # Use a static salt amount
     static_salt = b'static_salt'
     return PBKDF2(password, static_salt, dkLen=KEY_LENGTH, count=ITERATIONS)
 
@@ -39,7 +39,7 @@ def bytes_to_base64_str(bytes_data):
     return base64.b64encode(bytes_data).decode('utf-8')
 
 
-# Example usage
+# Example implementation below
 if __name__ == "__main__":
     password = "SecurePassword"
     salt = get_random_bytes(SALT_SIZE)

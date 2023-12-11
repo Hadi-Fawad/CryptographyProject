@@ -7,15 +7,15 @@ from utils import load_config
 
 
 def main():
-    # Load configuration settings
+    # Load config settings
     config = load_config("file:/C:/Users/Hadi%20Fawad/CompSec_Project/venv/config.json")
     host = config.get("host", "localhost")
     port = config.get("port", 12345)
 
-    # Initialize the key manager with a predefined password
+    # Initialize key manager with predefined password
     key_manager = KeyManager("SecurePassword")
 
-    # Start the chat application
+    # Start chat application
     app = ChatApp(host, port, key_manager)
     app.mainloop()
 
